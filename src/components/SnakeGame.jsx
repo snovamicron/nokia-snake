@@ -194,6 +194,37 @@ export default function SnakeGame() {
       {!started && !gameOver && <p>Swipe or use arrows to start</p>}
       {gameOver && <p className="over">Game Over</p>}
       {gameOver && <button onClick={restart}>Restart</button>}
+      {
+        <div className="touch-controls">
+          <button
+            className="touch-up"
+            onClick={() => setSafeDirection(DIRECTIONS.UP)}
+          >
+            ↑
+          </button>
+
+          <button
+            className="touch-left"
+            onClick={() => setSafeDirection(DIRECTIONS.LEFT)}
+          >
+            ←
+          </button>
+
+          <button
+            className="touch-down"
+            onClick={() => setSafeDirection(DIRECTIONS.DOWN)}
+          >
+            ↓
+          </button>
+
+          <button
+            className="touch-right"
+            onClick={() => setSafeDirection(DIRECTIONS.RIGHT)}
+          >
+            →
+          </button>
+        </div>
+      }
     </div>
   );
 }

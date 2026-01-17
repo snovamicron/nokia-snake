@@ -7,17 +7,22 @@ body {
   font-family: Courier, monospace;
   color: #00ff00;
   margin: 0;
+  height: 100%;
+  margin: 0;
+  overflow: hidden; /* 🔒 HARD scroll lock */
+  overscroll-behavior: none; /* 🔒 No bounce / refresh */
+  touch-action: none; /* 🔒 No browser gestures */
 }
 
 /* ---------- Layout ---------- */
 
 .game-container {
-  min-height: 100vh;
+  height: 100svh; /* stable viewport height */
+  width: 100vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 12px; /* prevents edge overflow on mobile */
 }
 
 /* ---------- Responsive Variables ---------- */
@@ -89,4 +94,63 @@ button {
   border: none;
   font-weight: bold;
   cursor: pointer;
+}
+/* ---------- Mobile Touch Buttons ---------- */
+
+.touch-controls {
+  margin-top: 16px;
+  display: none;
+  gap: 10px;
+  user-select: none;
+}
+
+.touch-controls button {
+  width: 60px;
+  height: 60px;
+  font-size: 22px;
+  font-weight: bold;
+  background: #00ff00;
+  border: none;
+  border-radius: 6px;
+  color: #000;
+}
+
+/* Show buttons only on mobile */
+@media (max-width: 768px) {
+  .touch-controls {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    align-items: center;
+    justify-items: center;
+  }
+
+  .touch-up {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .touch-left {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .touch-down {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .touch-right {
+    grid-column: 3;
+    grid-row: 2;
+  }
+}
+/* ---------- Safe Area Fix for Mobile ---------- */
+
+.game-container {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.touch-controls {
+  margin-bottom: env(safe-area-inset-bottom);
 }
