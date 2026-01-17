@@ -1,17 +1,16 @@
 import "../styles/SnakeGame.css";
 import React, { useState, useEffect, useRef } from "react";
 
+const DIRECTIONS = {
+  UP: { x: 0, y: -1 },
+  DOWN: { x: 0, y: 1 },
+  LEFT: { x: -1, y: 0 },
+  RIGHT: { x: 1, y: 0 },
+};
+
 export default function SnakeGame() {
   const GRID_SIZE = 20;
-  const CELL_SIZE = 20;
   const SPEED = 150;
-
-  const DIRECTIONS = {
-    UP: { x: 0, y: -1 },
-    DOWN: { x: 0, y: 1 },
-    LEFT: { x: -1, y: 0 },
-    RIGHT: { x: 1, y: 0 },
-  };
 
   const [snake, setSnake] = useState([
     { x: 10, y: 10 },
@@ -25,21 +24,35 @@ export default function SnakeGame() {
   const [started, setStarted] = useState(false);
 
   const directionRef = useRef(direction);
+  const touchStartRef = useRef(null);
 
   useEffect(() => {
     directionRef.current = direction;
   }, [direction]);
 
+  /* ---------- Safe Direction Change ---------- */
+  const setSafeDirection = (newDir) => {
+    const curr = directionRef.current;
+    if (curr.x + newDir.x === 0 && curr.y + newDir.y === 0) return;
+    setDirection(newDir);
+    setStarted(true);
+  };
+
   const generateFood = (snakeBody) => {
-    let pos;
-    while (true) {
-      pos = {
+    let newPos = null;
+
+    while (!newPos) {
+      const candidate = {
         x: Math.floor(Math.random() * GRID_SIZE),
         y: Math.floor(Math.random() * GRID_SIZE),
       };
-      if (!snakeBody.some((s) => s.x === pos.x && s.y === pos.y)) break;
+
+      if (!snakeBody.some((s) => s.x === candidate.x && s.y === candidate.y)) {
+        newPos = candidate;
+      }
     }
-    return pos;
+
+    return newPos;
   };
 
   const checkCollision = (head, body) => {
@@ -93,27 +106,49 @@ export default function SnakeGame() {
     const handleKey = (e) => {
       if (gameOver) return;
 
-      if (e.key === "ArrowUp" && directionRef.current.y !== 1) {
-        setDirection(DIRECTIONS.UP);
-        setStarted(true);
-      }
-      if (e.key === "ArrowDown" && directionRef.current.y !== -1) {
-        setDirection(DIRECTIONS.DOWN);
-        setStarted(true);
-      }
-      if (e.key === "ArrowLeft" && directionRef.current.x !== 1) {
-        setDirection(DIRECTIONS.LEFT);
-        setStarted(true);
-      }
-      if (e.key === "ArrowRight" && directionRef.current.x !== -1) {
-        setDirection(DIRECTIONS.RIGHT);
-        setStarted(true);
-      }
+      if (e.key === "ArrowUp") setSafeDirection(DIRECTIONS.UP);
+      if (e.key === "ArrowDown") setSafeDirection(DIRECTIONS.DOWN);
+      if (e.key === "ArrowLeft") setSafeDirection(DIRECTIONS.LEFT);
+      if (e.key === "ArrowRight") setSafeDirection(DIRECTIONS.RIGHT);
     };
 
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [gameOver]);
+
+  /* ---------- Swipe Handling ---------- */
+
+  const onTouchStart = (e) => {
+    e.preventDefault(); // IMPORTANT
+    touchStartRef.current = e.touches[0];
+  };
+
+  const onTouchEnd = (e) => {
+    e.preventDefault(); // IMPORTANT
+    if (!touchStartRef.current) return;
+
+    const start = touchStartRef.current;
+    const end = e.changedTouches[0];
+
+    const dx = end.clientX - start.clientX;
+    const dy = end.clientY - start.clientY;
+
+    const absX = Math.abs(dx);
+    const absY = Math.abs(dy);
+
+    // Ignore tiny swipes
+    if (Math.max(absX, absY) < 15) return;
+
+    if (absX > absY) {
+      if (dx > 0) setSafeDirection(DIRECTIONS.RIGHT);
+      else setSafeDirection(DIRECTIONS.LEFT);
+    } else {
+      if (dy > 0) setSafeDirection(DIRECTIONS.DOWN);
+      else setSafeDirection(DIRECTIONS.UP);
+    }
+
+    touchStartRef.current = null;
+  };
 
   const restart = () => {
     setSnake([
@@ -137,13 +172,7 @@ export default function SnakeGame() {
         else if (snake.some((s) => s.x === x && s.y === y)) cls += " snake";
         else if (food.x === x && food.y === y) cls += " food";
 
-        cells.push(
-          <div
-            key={`${x}-${y}`}
-            className={cls}
-            style={{ width: CELL_SIZE, height: CELL_SIZE }}
-          />,
-        );
+        cells.push(<div key={`${x}-${y}`} className={cls} />);
       }
     }
     return cells;
@@ -153,9 +182,16 @@ export default function SnakeGame() {
     <div className="game-container">
       <h1>NOKIA SNAKE</h1>
       <div className="score">Score: {score}</div>
-      <div className="board">{renderGrid()}</div>
 
-      {!started && !gameOver && <p>Press Arrow Keys to Start</p>}
+      <div
+        className="board"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        {renderGrid()}
+      </div>
+
+      {!started && !gameOver && <p>Swipe or use arrows to start</p>}
       {gameOver && <p className="over">Game Over</p>}
       {gameOver && <button onClick={restart}>Restart</button>}
     </div>

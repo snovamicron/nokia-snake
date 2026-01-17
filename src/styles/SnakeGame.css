@@ -9,29 +9,54 @@ body {
   margin: 0;
 }
 
+/* ---------- Layout ---------- */
+
 .game-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 12px; /* prevents edge overflow on mobile */
 }
+
+/* ---------- Responsive Variables ---------- */
+
+:root {
+  /* 
+    Desktop: stays ~20px
+    Mobile: scales down automatically
+  */
+  --cell-size: min(4.5vw, 20px);
+}
+
+/* ---------- Game Board ---------- */
 
 .board {
   display: grid;
-  grid-template-columns: repeat(20, 20px);
-  grid-template-rows: repeat(20, 20px);
+  grid-template-columns: repeat(20, var(--cell-size));
+  grid-template-rows: repeat(20, var(--cell-size));
   gap: 1px;
   background: #000;
   border: 3px solid #00ff00;
   padding: 3px;
 }
+.board {
+  /* existing styles stay */
+
+  touch-action: none; /* disables scroll & refresh gestures */
+  overscroll-behavior: none; /* disables pull-to-refresh */
+}
+
+/* ---------- Cells ---------- */
 
 .cell {
-  width: 20px;
-  height: 20px;
+  width: var(--cell-size);
+  height: var(--cell-size);
   background: #111;
 }
+
+/* ---------- Snake Elements ---------- */
 
 .snake {
   background: #00ff00;
@@ -46,6 +71,8 @@ body {
   border-radius: 50%;
 }
 
+/* ---------- UI ---------- */
+
 .score {
   margin-bottom: 10px;
 }
@@ -57,7 +84,7 @@ body {
 
 button {
   margin-top: 10px;
-  padding: 6px 16px;
+  padding: 8px 18px;
   background: #00ff00;
   border: none;
   font-weight: bold;
