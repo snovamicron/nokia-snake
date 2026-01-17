@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/nokia-snake/static/css/main.6e923c15.css",
-    "main.js": "/nokia-snake/static/js/main.98caa618.js",
+    "main.css": "/nokia-snake/static/css/main.5e7a1ade.css",
+    "main.js": "/nokia-snake/static/js/main.e1eade10.js",
     "index.html": "/nokia-snake/index.html",
-    "main.6e923c15.css.map": "/nokia-snake/static/css/main.6e923c15.css.map",
-    "main.98caa618.js.map": "/nokia-snake/static/js/main.98caa618.js.map"
+    "main.5e7a1ade.css.map": "/nokia-snake/static/css/main.5e7a1ade.css.map",
+    "main.e1eade10.js.map": "/nokia-snake/static/js/main.e1eade10.js.map"
   },
   "entrypoints": [
-    "static/css/main.6e923c15.css",
-    "static/js/main.98caa618.js"
+    "static/css/main.5e7a1ade.css",
+    "static/js/main.e1eade10.js"
   ]
 }
