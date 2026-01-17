@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/nokia-snake/static/css/main.4c5b3aab.css",
+    "main.js": "/nokia-snake/static/js/main.0af2993a.js",
+    "index.html": "/nokia-snake/index.html",
+    "main.4c5b3aab.css.map": "/nokia-snake/static/css/main.4c5b3aab.css.map",
+    "main.0af2993a.js.map": "/nokia-snake/static/js/main.0af2993a.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4c5b3aab.css",
+    "static/js/main.0af2993a.js"
+  ]
+}
